@@ -10,7 +10,23 @@ public class Movement : MonoBehaviour
 
     private Camera mainCamera;
     private Rigidbody rb;
-    
+    private Controls _controls;
+
+    private void Awake()
+    {
+        _controls = new Controls();
+    }
+
+    private void OnEnable()
+    {
+        _controls.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _controls.Disable();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,11 +42,10 @@ public class Movement : MonoBehaviour
             return;
         }
         
-        float yAxis = Input.GetAxis("Vertical");
-        float xAxis = Input.GetAxis("Horizontal");
-        if (yAxis != 0 || xAxis != 0)
+        if (_controls.Player.Move.IsPressed())
         {
-            Vector3 target = HandleInput(new Vector2(xAxis, yAxis));
+            Vector2 input = _controls.Player.Move.ReadValue<Vector2>();
+            Vector3 target = HandleInput(input);
             Move(target);
         }
     }
@@ -42,11 +57,10 @@ public class Movement : MonoBehaviour
             return;
         }
 
-        float yAxis = Input.GetAxis("Vertical");
-        float xAxis = Input.GetAxis("Horizontal");
-        if (yAxis != 0 || xAxis != 0)
+        if (_controls.Player.Move.IsPressed())
         {
-            Vector3 target = HandleInput(new Vector2(xAxis, yAxis));
+            Vector2 input = _controls.Player.Move.ReadValue<Vector2>();
+            Vector3 target = HandleInput(input);
             MovePhysics(target);
         }
     }
