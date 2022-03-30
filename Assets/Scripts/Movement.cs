@@ -8,8 +8,8 @@ public class Movement : MonoBehaviour
     [SerializeField] private int speed = 10;
     [SerializeField] private bool usePhysics = true;
 
-    private Camera mainCamera;
-    private Rigidbody rb;
+    private Camera _mainCamera;
+    private Rigidbody _rb;
     private Controls _controls;
     private Animator _animator;
     private static readonly int IsWalking = Animator.StringToHash("isWalking");
@@ -21,24 +21,24 @@ public class Movement : MonoBehaviour
 
     private void OnEnable()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         _controls.Enable();
     }
 
     private void OnDisable()
     {
+        Cursor.lockState = CursorLockMode.None;
         _controls.Disable();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        mainCamera = Camera.main;
-        rb = gameObject.GetComponent<Rigidbody>();
+        _mainCamera = Camera.main;
+        _rb = gameObject.GetComponent<Rigidbody>();
         _animator = gameObject.GetComponentInChildren<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (usePhysics)
         {
@@ -80,8 +80,8 @@ public class Movement : MonoBehaviour
 
     private Vector3 HandleInput(Vector2 input)
     {
-        Vector3 forward = mainCamera.transform.forward;
-        Vector3 right = mainCamera.transform.right;
+        Vector3 forward = _mainCamera.transform.forward;
+        Vector3 right = _mainCamera.transform.right;
 
         forward.y = 0;
         right.y = 0;
@@ -101,6 +101,6 @@ public class Movement : MonoBehaviour
 
     private void MovePhysics(Vector3 target)
     {
-        rb.MovePosition(target); 
+        _rb.MovePosition(target); 
     }
 }
