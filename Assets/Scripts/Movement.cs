@@ -11,6 +11,8 @@ public class Movement : MonoBehaviour
     private Camera mainCamera;
     private Rigidbody rb;
     private Controls _controls;
+    private Animator _animator;
+    private static readonly int IsWalking = Animator.StringToHash("isWalking");
 
     private void Awake()
     {
@@ -32,6 +34,7 @@ public class Movement : MonoBehaviour
     {
         mainCamera = Camera.main;
         rb = gameObject.GetComponent<Rigidbody>();
+        _animator = gameObject.GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -44,9 +47,14 @@ public class Movement : MonoBehaviour
         
         if (_controls.Player.Move.IsPressed())
         {
+            _animator.SetBool(IsWalking, true);
             Vector2 input = _controls.Player.Move.ReadValue<Vector2>();
             Vector3 target = HandleInput(input);
             Move(target);
+        }
+        else
+        {
+            _animator.SetBool(IsWalking, false);
         }
     }
 
@@ -59,9 +67,14 @@ public class Movement : MonoBehaviour
 
         if (_controls.Player.Move.IsPressed())
         {
+            _animator.SetBool(IsWalking, true);
             Vector2 input = _controls.Player.Move.ReadValue<Vector2>();
             Vector3 target = HandleInput(input);
             MovePhysics(target);
+        }
+        else
+        {
+            _animator.SetBool(IsWalking, false);
         }
     }
 
