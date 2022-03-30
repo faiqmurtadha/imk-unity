@@ -6,41 +6,52 @@ using UnityEngine;
 public class Movement : MonoBehaviour
 {
     [SerializeField] private int speed = 10;
+    [SerializeField] private bool usePhysics = true;
 
     private Camera mainCamera;
+    private Rigidbody rb;
     
     // Start is called before the first frame update
     void Start()
     {
         mainCamera = Camera.main;
+        rb = gameObject.GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.W))
+        if (usePhysics)
         {
-            Debug.Log("W");
-            Move(Vector2.up);
-        } else if (Input.GetKey(KeyCode.S))
-        {
-            Debug.Log("S");
-            Move(Vector2.down);
+            return;
         }
         
-        if (Input.GetKey(KeyCode.A))
+        float yAxis = Input.GetAxis("Vertical");
+        float xAxis = Input.GetAxis("Horizontal");
+        if (yAxis != 0 || xAxis != 0)
         {
-            Debug.Log("A");
-            Move(Vector2.left);
-        } else if (Input.GetKey(KeyCode.D))
-        {
-            Debug.Log("D");
-            Move(Vector2.right);
+            Vector3 target = HandleInput(new Vector2(xAxis, yAxis));
+            Move(target);
         }
-        
     }
 
-    private void Move(Vector2 input)
+    private void FixedUpdate()
+    {
+        if (!usePhysics)
+        {
+            return;
+        }
+
+        float yAxis = Input.GetAxis("Vertical");
+        float xAxis = Input.GetAxis("Horizontal");
+        if (yAxis != 0 || xAxis != 0)
+        {
+            Vector3 target = HandleInput(new Vector2(xAxis, yAxis));
+            MovePhysics(target);
+        }
+    }
+
+    private Vector3 HandleInput(Vector2 input)
     {
         Vector3 forward = mainCamera.transform.forward;
         Vector3 right = mainCamera.transform.right;
@@ -53,6 +64,16 @@ public class Movement : MonoBehaviour
 
         Vector3 direction = right * input.x + forward * input.y;
         
-        transform.position = transform.position + direction * speed * Time.deltaTime;
+        return transform.position + direction * speed * Time.deltaTime;
+    }
+
+    private void Move(Vector3 target)
+    {
+        transform.position = target;
+    }
+
+    private void MovePhysics(Vector3 target)
+    {
+        rb.MovePosition(target); 
     }
 }
