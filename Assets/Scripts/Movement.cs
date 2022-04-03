@@ -5,14 +5,17 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
-    [SerializeField] private int speed = 10;
-    [SerializeField] private bool usePhysics = true;
+    private float speed;
+    [SerializeField] private float baseSpeed = 10f;
+    [SerializeField] private float boostSpeed = 1.5f;
 
     private Camera _mainCamera;
     private Rigidbody _rb;
     private Controls _controls;
     private Animator _animator;
     private static readonly int IsWalking = Animator.StringToHash("isWalking");
+    private static readonly int IsRunning = Animator.StringToHash("isRunning");
+    private static readonly int IsJumping = Animator.StringToHash("isJumping");
 
     private void Awake()
     {
@@ -33,6 +36,7 @@ public class Movement : MonoBehaviour
 
     private void Start()
     {
+        speed = baseSpeed;
         _mainCamera = Camera.main;
         _rb = gameObject.GetComponent<Rigidbody>();
         _animator = gameObject.GetComponentInChildren<Animator>();
@@ -40,31 +44,33 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        if (usePhysics)
-        {
-            return;
-        }
-        
-        if (_controls.Player.Move.IsPressed())
-        {
-            _animator.SetBool(IsWalking, true);
-            Vector2 input = _controls.Player.Move.ReadValue<Vector2>();
-            Vector3 target = HandleInput(input);
-            Move(target);
-        }
-        else
-        {
-            _animator.SetBool(IsWalking, false);
-        }
+        if (!_controls.Player.Move.IsPressed()) return;
+        Vector2 input = _controls.Player.Move.ReadValue<Vector2>();
+        Vector3 target = HandleInput(input);
+        RotateCharacter(target);
     }
+
 
     private void FixedUpdate()
     {
-        if (!usePhysics)
+        if (_controls.Player.Jump.IsPressed())
         {
-            return;
+            if (!_animator.GetBool(IsJumping))
+            {
+                _animator.SetBool(IsJumping, true);
+            }
         }
 
+        if (_controls.Player.Run.IsPressed())
+        {
+            _animator.SetBool(IsRunning, true);
+            speed = baseSpeed * boostSpeed;
+        }
+        else
+        {
+            _animator.SetBool(IsRunning, false);
+            speed = baseSpeed;
+        }
         if (_controls.Player.Move.IsPressed())
         {
             _animator.SetBool(IsWalking, true);
@@ -94,13 +100,27 @@ public class Movement : MonoBehaviour
         return transform.position + direction * speed * Time.deltaTime;
     }
 
-    private void Move(Vector3 target)
+    private void RotateCharacter(Vector3 target)
     {
-        transform.position = target;
+        transform.rotation = Quaternion.LookRotation(target-transform.position);
     }
 
     private void MovePhysics(Vector3 target)
     {
         _rb.MovePosition(target); 
     }
+
+    public void Jump()
+    {
+        _rb.AddForce(Vector3.up * 300);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.transform.position.y <= transform.position.y)
+        {
+            _animator.SetBool(IsJumping, false);
+        }
+    }
+
 }
