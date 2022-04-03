@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -8,6 +9,8 @@ public class Movement : MonoBehaviour
     private float speed;
     [SerializeField] private float baseSpeed = 10f;
     [SerializeField] private float boostSpeed = 1.5f;
+
+    [SerializeField] private CinemachineImpulseSource _impulseSource;
 
     private Camera _mainCamera;
     private Rigidbody _rb;
@@ -19,6 +22,7 @@ public class Movement : MonoBehaviour
 
     private void Awake()
     {
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
         _controls = new Controls();
     }
 
@@ -64,6 +68,7 @@ public class Movement : MonoBehaviour
         if (_controls.Player.Run.IsPressed())
         {
             _animator.SetBool(IsRunning, true);
+            _impulseSource.GenerateImpulse();
             speed = baseSpeed * boostSpeed;
         }
         else
@@ -117,7 +122,7 @@ public class Movement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.transform.position.y <= transform.position.y)
+        if (collision.collider.CompareTag("Ground"))
         {
             _animator.SetBool(IsJumping, false);
         }

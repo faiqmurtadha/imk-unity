@@ -5,7 +5,7 @@ ModelImporter:
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: mixamo.com
+    second: jumping
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -35,15 +35,15 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: jumping
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 71
+      lastFrame: 40
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
-      cycleOffset: 0
+      cycleOffset: 37.83
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 0
@@ -59,7 +59,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.3814815
+      - time: 0.64919806
         functionName: Jump
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 4ce1e6e7138f6824cbd34fe2ecf3add9,
@@ -70,7 +70,7 @@ ModelImporter:
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+      additiveReferencePoseFrame: 37
     isReadable: 0
   meshes:
     lODScreenPercentages: []
