@@ -10,6 +10,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private GameObject pause;
     [SerializeField] private Button pauseButton;
     [SerializeField] private Button resumeButton;
+    [SerializeField] private Button menuButton;
     [SerializeField] private Button exitButton;
 
     private Controls _controls;
@@ -34,6 +35,7 @@ public class PauseMenu : MonoBehaviour
         _controls.Player.Pause.performed += context => PauseGame(); 
         pauseButton.onClick.AddListener(PauseGame);
         resumeButton.onClick.AddListener(ResumeGame);
+        menuButton.onClick.AddListener(MainMenu);
         exitButton.onClick.AddListener(ExitGame);
         Time.timeScale = 1;
         pause.SetActive(false);
@@ -58,8 +60,13 @@ public class PauseMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
     
-    public void ExitGame()
+    public void MainMenu()
     {
         SceneManager.LoadScene("MenuScene");
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }
